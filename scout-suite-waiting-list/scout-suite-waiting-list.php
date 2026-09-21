@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Scout Suite
  * Plugin URI:        https://scoutsuite.app
- * Description:       Connect a Scout Suite Group, District or County to WordPress. Sync Groups into WP Store Locator / Skills for Life, and embed a waiting list form on Group sites.
- * Version:           1.1.0
+ * Description:       Connect a Scout Suite Group, District or County to WordPress. Sync Groups into WP Store Locator / Skills for Life, and embed a waiting list or general enquiry form on your site.
+ * Version:           1.2.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Scout Suite
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SCOUTSUITE_WAITLIST_VERSION', '1.1.0' );
+define( 'SCOUTSUITE_WAITLIST_VERSION', '1.2.0' );
 define( 'SCOUTSUITE_WAITLIST_PLUGIN_FILE', __FILE__ );
 define( 'SCOUTSUITE_WAITLIST_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SCOUTSUITE_WAITLIST_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -32,6 +32,7 @@ define( 'SCOUTSUITE_WAITLIST_SECTIONS_TRANSIENT', 'scoutsuite_waitlist_sections'
 require_once SCOUTSUITE_WAITLIST_PLUGIN_DIR . 'includes/class-scoutsuite-waitlist-api.php';
 require_once SCOUTSUITE_WAITLIST_PLUGIN_DIR . 'includes/class-scoutsuite-waitlist-settings.php';
 require_once SCOUTSUITE_WAITLIST_PLUGIN_DIR . 'includes/class-scoutsuite-waitlist-form.php';
+require_once SCOUTSUITE_WAITLIST_PLUGIN_DIR . 'includes/class-scoutsuite-waitlist-enquiry.php';
 require_once SCOUTSUITE_WAITLIST_PLUGIN_DIR . 'includes/class-scoutsuite-waitlist-stores.php';
 require_once SCOUTSUITE_WAITLIST_PLUGIN_DIR . 'includes/class-scoutsuite-waitlist-events.php';
 require_once SCOUTSUITE_WAITLIST_PLUGIN_DIR . 'includes/class-scoutsuite-waitlist-sync.php';
@@ -51,6 +52,7 @@ function scoutsuite_waitlist_get_options() {
 		'privacy_notice'    => __( 'We use the details you provide only to manage our waiting list and to contact you about a place for your child. We store them securely in Scout Suite, our membership system, and we do not share them with anyone else. You can ask us to remove your details at any time.', 'scoutsuite-waitlist' ),
 		'consent_label'     => __( 'I agree to my details being stored and used to manage this waiting list application.', 'scoutsuite-waitlist' ),
 		'success_message'   => __( 'Thank you. Your child has been added to our waiting list and we will be in touch.', 'scoutsuite-waitlist' ),
+		'enquiry_success_message' => __( 'Thank you for getting in touch. We will be back to you soon.', 'scoutsuite-waitlist' ),
 	);
 
 	$saved = get_option( SCOUTSUITE_WAITLIST_OPTION, array() );
@@ -118,6 +120,7 @@ function scoutsuite_waitlist_get_api() {
 function scoutsuite_waitlist_init() {
 	new ScoutSuite_Waitlist_Settings();
 	new ScoutSuite_Waitlist_Form();
+	new ScoutSuite_Waitlist_Enquiry();
 	new ScoutSuite_Waitlist_Sync();
 }
 add_action( 'plugins_loaded', 'scoutsuite_waitlist_init' );
@@ -157,6 +160,24 @@ function scoutsuite_waitlist_register_block() {
 			'editor_script'   => 'scoutsuite-waitlist-block',
 			'style'           => 'scoutsuite-waitlist',
 			'render_callback' => array( 'ScoutSuite_Waitlist_Form', 'render_form' ),
+		)
+	);
+
+	wp_register_script(
+		'scoutsuite-enquiry-block',
+		SCOUTSUITE_WAITLIST_PLUGIN_URL . 'assets/js/scoutsuite-enquiry-block.js',
+		array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-i18n' ),
+		SCOUTSUITE_WAITLIST_VERSION,
+		true
+	);
+
+	register_block_type(
+		'scoutsuite/enquiry',
+		array(
+			'api_version'     => 2,
+			'editor_script'   => 'scoutsuite-enquiry-block',
+			'style'           => 'scoutsuite-waitlist',
+			'render_callback' => array( 'ScoutSuite_Waitlist_Enquiry', 'render_form' ),
 		)
 	);
 }

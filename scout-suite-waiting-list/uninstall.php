@@ -26,5 +26,7 @@ global $wpdb;
 $wpdb->query(
 	"DELETE FROM {$wpdb->options}
 	 WHERE option_name LIKE '\_transient\_sswl\_feedback\_%'
-	    OR option_name LIKE '\_transient\_timeout\_sswl\_feedback\_%'"
+	    OR option_name LIKE '\_transient\_timeout\_sswl\_feedback\_%'
+	    OR option_name LIKE '\_transient\_sse\_feedback\_%'
+	    OR option_name LIKE '\_transient\_timeout\_sse\_feedback\_%'"
 );

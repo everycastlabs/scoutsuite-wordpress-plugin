@@ -115,8 +115,16 @@ class ScoutSuite_Waitlist_Settings {
 
 		add_settings_field(
 			'success_message',
-			__( 'Success message', 'scoutsuite-waitlist' ),
+			__( 'Waiting list success message', 'scoutsuite-waitlist' ),
 			array( $this, 'render_success_message_field' ),
+			'scoutsuite-waitlist',
+			'scoutsuite_waitlist_form_text'
+		);
+
+		add_settings_field(
+			'enquiry_success_message',
+			__( 'Enquiry success message', 'scoutsuite-waitlist' ),
+			array( $this, 'render_enquiry_success_message_field' ),
 			'scoutsuite-waitlist',
 			'scoutsuite_waitlist_form_text'
 		);
@@ -162,6 +170,7 @@ class ScoutSuite_Waitlist_Settings {
 		$clean['privacy_notice']  = isset( $input['privacy_notice'] ) ? sanitize_textarea_field( $input['privacy_notice'] ) : $defaults['privacy_notice'];
 		$clean['consent_label']   = isset( $input['consent_label'] ) && '' !== trim( $input['consent_label'] ) ? sanitize_text_field( $input['consent_label'] ) : $defaults['consent_label'];
 		$clean['success_message'] = isset( $input['success_message'] ) && '' !== trim( $input['success_message'] ) ? sanitize_text_field( $input['success_message'] ) : $defaults['success_message'];
+		$clean['enquiry_success_message'] = isset( $input['enquiry_success_message'] ) && '' !== trim( $input['enquiry_success_message'] ) ? sanitize_text_field( $input['enquiry_success_message'] ) : $defaults['enquiry_success_message'];
 
 		delete_transient( SCOUTSUITE_WAITLIST_SECTIONS_TRANSIENT );
 
@@ -182,6 +191,11 @@ class ScoutSuite_Waitlist_Settings {
 				<?php esc_html_e( 'On a Group site, add the waiting list form with', 'scoutsuite-waitlist' ); ?>
 				<code>[scoutsuite_waitlist]</code>
 				<?php esc_html_e( 'or the Scout Suite Waiting List block. On a District or County site, use Sync now and keep Skills for Life for the public Group list — the shortcode is a single-Group form, not a Group picker.', 'scoutsuite-waitlist' ); ?>
+			</p>
+			<p>
+				<?php esc_html_e( 'For a general "get in touch" form — on a Group, District or County site alike — add', 'scoutsuite-waitlist' ); ?>
+				<code>[scoutsuite_enquiry]</code>
+				<?php esc_html_e( 'or the Scout Suite Enquiry block. Unlike the waiting list, this is not a request to join a specific section, so it works against any Org ID.', 'scoutsuite-waitlist' ); ?>
 			</p>
 			<form action="options.php" method="post">
 				<?php
@@ -318,7 +332,7 @@ class ScoutSuite_Waitlist_Settings {
 			esc_attr( SCOUTSUITE_WAITLIST_OPTION ),
 			esc_textarea( $options['privacy_notice'] )
 		);
-		echo '<p class="description">' . esc_html__( 'Shown above the consent checkbox. Explain what you do with the data.', 'scoutsuite-waitlist' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Shown above the consent checkbox on both the waiting list and enquiry forms. Explain what you do with the data.', 'scoutsuite-waitlist' ) . '</p>';
 	}
 
 	public function render_consent_label_field() {
@@ -328,6 +342,7 @@ class ScoutSuite_Waitlist_Settings {
 			esc_attr( SCOUTSUITE_WAITLIST_OPTION ),
 			esc_attr( $options['consent_label'] )
 		);
+		echo '<p class="description">' . esc_html__( 'Used on both the waiting list and enquiry forms.', 'scoutsuite-waitlist' ) . '</p>';
 	}
 
 	public function render_success_message_field() {
@@ -337,5 +352,16 @@ class ScoutSuite_Waitlist_Settings {
 			esc_attr( SCOUTSUITE_WAITLIST_OPTION ),
 			esc_attr( $options['success_message'] )
 		);
+		echo '<p class="description">' . esc_html__( 'Shown after a successful [scoutsuite_waitlist] submission.', 'scoutsuite-waitlist' ) . '</p>';
+	}
+
+	public function render_enquiry_success_message_field() {
+		$options = scoutsuite_waitlist_get_options();
+		printf(
+			'<input type="text" class="large-text" name="%s[enquiry_success_message]" value="%s" />',
+			esc_attr( SCOUTSUITE_WAITLIST_OPTION ),
+			esc_attr( $options['enquiry_success_message'] )
+		);
+		echo '<p class="description">' . esc_html__( 'Shown after a successful [scoutsuite_enquiry] submission.', 'scoutsuite-waitlist' ) . '</p>';
 	}
 }

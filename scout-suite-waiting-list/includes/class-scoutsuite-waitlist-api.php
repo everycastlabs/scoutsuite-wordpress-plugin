@@ -20,10 +20,21 @@
  *   GET /api/orgs/{orgId}/wordpress/directory
  *     Plugin-only. Bearer required. Directory of Groups in a District/County,
  *     or the single Group when orgId is a Group. 404 must fail the sync.
+ *     Each group row now includes scoutingBranch ("land"|"air"|"sea"|null).
+ *     The envelope also carries regionalTierLabel ("county"|"area"|"region"|null)
+ *     describing the queried org itself (only set when orgId is a County).
  *
  *   GET /api/orgs/{orgId}/wordpress/events
  *     Plugin-only. Bearer required. Public events for that org. 404 must
  *     fail the sync rather than inventing events.
+ *
+ *   POST /api/orgs/{orgId}/enquiries
+ *     Adds a general enquiry (not a request to join a specific section —
+ *     that is the waiting list above). Works for a Group, District or
+ *     County id alike, unlike the waiting list endpoint which is Group
+ *     only. Callable publicly, or with a Bearer API key.
+ *     Required: name, and at least one of email or phone. Optional: message,
+ *     source ("wordpress" when submitted from this plugin).
  *
  * Errors come back as { success: false, error: { code, message, details } }.
  */
@@ -146,6 +157,29 @@ class ScoutSuite_Waitlist_API {
 		);
 
 		return $this->parse_response( $response );
+	}
+
+	/**
+	 * Submit a general enquiry. Unlike submit_entry(), this always uses the
+	 * plugin's own Org ID directly — a District or County id works fine,
+	 * since enquiries are not tied to a single Group's waiting list.
+	 *
+	 * @param array $fields Body fields already validated by the caller.
+	 * @return array { success: bool, message: string, code: string }
+	 */
+	public function submit_enquiry( $fields ) {
+		$url = $this->base_url . '/api/orgs/' . rawurlencode( $this->org_id ) . '/enquiries';
+
+		$response = wp_remote_post(
+			$url,
+			array(
+				'timeout' => 15,
+				'headers' => $this->build_headers( true ),
+				'body'    => wp_json_encode( $fields ),
+			)
+		);
+
+		return $this->parse_response( $response, 'enquiry' );
 	}
 
 	/**
@@ -282,7 +316,7 @@ class ScoutSuite_Waitlist_API {
 	 * readable message out of the Scout Suite error envelope when present.
 	 *
 	 * @param array|WP_Error $response Raw response.
-	 * @param string         $context  signup|directory|events for wording.
+	 * @param string         $context  signup|enquiry|directory|events for wording.
 	 * @return array { success: bool, message: string, code: string, data: mixed, status: int }
 	 */
 	private function parse_response( $response, $context = 'signup' ) {
@@ -316,6 +350,8 @@ class ScoutSuite_Waitlist_API {
 			$message = __( 'Scout Suite directory sync failed.', 'scoutsuite-waitlist' );
 		} elseif ( 'events' === $context ) {
 			$message = __( 'Scout Suite events sync failed.', 'scoutsuite-waitlist' );
+		} elseif ( 'enquiry' === $context ) {
+			$message = __( 'Something went wrong while sending your enquiry. Please try again.', 'scoutsuite-waitlist' );
 		}
 
 		if ( is_array( $body ) && isset( $body['error'] ) && is_array( $body['error'] ) ) {
@@ -337,12 +373,14 @@ class ScoutSuite_Waitlist_API {
 				$message = __( 'Scout Suite directory endpoint was not found (404). Sync stopped rather than inventing Groups. Confirm the plugin-only API is deployed and the Org ID is correct.', 'scoutsuite-waitlist' );
 			} elseif ( 'events' === $context ) {
 				$message = __( 'Scout Suite events endpoint was not found (404). Sync stopped rather than inventing events. Confirm the plugin-only API is deployed and the Org ID is correct.', 'scoutsuite-waitlist' );
+			} elseif ( 'enquiry' === $context ) {
+				$message = __( 'This form is not set up correctly (organisation not found). Please contact the website owner.', 'scoutsuite-waitlist' );
 			} else {
 				$message = __( 'This form is not set up correctly (group not found). Please contact the website owner.', 'scoutsuite-waitlist' );
 			}
 		} elseif ( 401 === $status || 403 === $status ) {
 			$code = 'not_authorised';
-			if ( 'signup' === $context ) {
+			if ( 'signup' === $context || 'enquiry' === $context ) {
 				$message = __( 'This form is not set up correctly (not authorised). Please contact the website owner.', 'scoutsuite-waitlist' );
 			} else {
 				$message = __( 'Scout Suite rejected the API key (not authorised). Check the Bearer token from the developer portal.', 'scoutsuite-waitlist' );

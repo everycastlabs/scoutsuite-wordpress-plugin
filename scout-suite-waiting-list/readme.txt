@@ -4,11 +4,11 @@ Tags: scouts, scout suite, waiting list, directory, membership
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Connect a Scout Suite Group, District or County to WordPress. Sync Groups into WP Store Locator / Skills for Life. Embed a waiting list form on Group sites.
+Connect a Scout Suite Group, District or County to WordPress. Sync Groups into WP Store Locator / Skills for Life. Embed a waiting list or general enquiry form on your site.
 
 == Description ==
 
@@ -20,15 +20,18 @@ On a **District or County** site, set the Org ID to that District or County and 
 
 On a **Group** site, set the Org ID to that Group and add `[scoutsuite_waitlist]` if parents should join the list on your website.
 
+Any site, Group, District or County, can also add `[scoutsuite_enquiry]` for a general "get in touch" form. Unlike the waiting list, an enquiry is not tied to a specific section, so it works at any level.
+
 Features:
 
 * Sync Groups from a District, County or Group into WP Store Locator without duplicating stores or blanking editor content
 * Hourly WP-Cron plus a Sync now button
 * Shortcode `[scoutsuite_waitlist]` and a Gutenberg block for Group waiting list signups
-* Form fields that match the Scout Suite waiting list API
+* Shortcode `[scoutsuite_enquiry]` and a Gutenberg block for general enquiries, on Group, District or County sites
+* Form fields that match the Scout Suite waiting list and enquiry APIs
 * Section dropdown filled automatically from your group's active sections, with a manual override in settings
 * Submissions are sent from your server with `"source": "wordpress"`. Your API key is never exposed to visitors
-* GDPR ready: a configurable privacy notice and a required consent checkbox
+* GDPR ready: a configurable privacy notice and a required consent checkbox on both forms
 * Honeypot spam protection and WordPress nonce verification
 * Light styling that inherits your theme
 * Removes all its settings when you delete the plugin
@@ -40,6 +43,7 @@ Features:
 3. Go to Settings, Scout Suite and enter your Org ID (District, County, or Group) and API key.
 4. Click Sync now to pull Groups into WP Store Locator / Skills for Life.
 5. On a Group site, add the form with `[scoutsuite_waitlist]` or the Scout Suite Waiting List block.
+6. On any site, add `[scoutsuite_enquiry]` or the Scout Suite Enquiry block for a general contact form.
 
 == Frequently Asked Questions ==
 
@@ -57,7 +61,13 @@ The waiting list signup endpoint accepts public submissions without a key. Direc
 
 = Which fields are required on the form? =
 
-Child's first name, child's last name, your name, your email address and the consent checkbox. Everything else is optional, matching the Scout Suite API.
+Waiting list: child's first name, child's last name, your name, your email address and the consent checkbox. Everything else is optional, matching the Scout Suite API.
+
+Enquiry: your name, at least one of email or phone, and the consent checkbox. A message is optional.
+
+= What is the difference between the waiting list form and the enquiry form? =
+
+The waiting list form (`[scoutsuite_waitlist]`) is a request to join a specific Group's list and only works on a Group site. The enquiry form (`[scoutsuite_enquiry]`) is a general "get in touch" message and works on a Group, District or County site.
 
 = What happens if a child is already on the list? =
 
@@ -81,6 +91,11 @@ The privacy notice, consent label and success message are editable under Setting
 
 == Changelog ==
 
+= 1.2.0 =
+* New `[scoutsuite_enquiry]` shortcode and Gutenberg block: a general "get in touch" form that works on Group, District or County sites, posting to `POST /api/orgs/{orgId}/enquiries`.
+* New editable "Enquiry success message" setting.
+* Synced Groups now carry a `_scoutsuite_scouting_branch` meta (`land`/`air`/`sea`) for theme filtering, e.g. "Sea Scouts near me".
+
 = 1.1.0 =
 * Plugin renamed to Scout Suite. Waiting list is one feature; directory and events sync are the other.
 * Sync Groups from Scout Suite into WP Store Locator (`wpsl_stores`) for Skills for Life sites.
@@ -93,6 +108,9 @@ The privacy notice, consent label and success message are editable under Setting
 * First release. Shortcode, Gutenberg block, settings page, section auto detection, consent handling and Scout Suite waiting list API integration.
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Adds a general enquiry form (`[scoutsuite_enquiry]`) for Group, District and County sites, alongside the existing Group-only waiting list form.
 
 = 1.1.0 =
 Now named Scout Suite. Adds directory and events sync into WP Store Locator and The Events Calendar. The `[scoutsuite_waitlist]` shortcode is unchanged.

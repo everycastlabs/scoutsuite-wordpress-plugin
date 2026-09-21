@@ -48,6 +48,12 @@
 	max-width: 12rem;
 }
 
+.sswl-field-hint {
+	margin: -0.5rem 0 1rem;
+	font-size: 0.875em;
+	opacity: 0.85;
+}
+
 /* Two columns on wider screens, stacked on small ones. */
 .sswl-row-2col {
 	display: grid;

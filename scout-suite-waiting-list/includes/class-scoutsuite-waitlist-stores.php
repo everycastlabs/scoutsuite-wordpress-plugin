@@ -2,8 +2,12 @@
 /**
  * Upsert Scout Suite directory rows into WP Store Locator `wpsl_stores`.
  *
- * WPSL and Skills for Life keep the public map/list UI. This class only
- * writes the post meta those plugins already read. It never deletes stores.
+ * WPSL and Skills for Life keep the public map/list UI. This class mostly
+ * writes the post meta those plugins already read, plus one bespoke key
+ * they do not: `_scoutsuite_scouting_branch` ('land'|'air'|'sea'), for
+ * theme developers who want to filter or badge stores by branch — neither
+ * WPSL nor Skills for Life has a native concept of this. It never deletes
+ * stores.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -196,6 +200,12 @@ class ScoutSuite_Waitlist_Stores {
 
 		self::update_meta( $post_id, 'wpsl_group_type', self::map_group_type( $group ) );
 		self::update_meta( $post_id, 'wpsl_section_details', wp_json_encode( self::map_sections( $group ) ) );
+
+		// Not a native WPSL/SFL field — a bespoke meta key for theme developers
+		// and site owners who want to filter or badge stores by branch, e.g.
+		// "Sea Scouts near me". 'land' | 'air' | 'sea', defaults to 'land'.
+		$branch = strtolower( self::pick_string( $group, array( 'scoutingBranch', 'scouting_branch' ) ) );
+		self::update_meta( $post_id, '_scoutsuite_scouting_branch', '' !== $branch ? $branch : 'land' );
 
 		$scarf = self::map_scarf( $group );
 		if ( ! empty( $scarf ) ) {
