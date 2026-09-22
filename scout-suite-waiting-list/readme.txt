@@ -94,7 +94,7 @@ The privacy notice, consent label and success message are editable under Setting
 = 1.2.0 =
 * New `[scoutsuite_enquiry]` shortcode and Gutenberg block: a general "get in touch" form that works on Group, District or County sites, posting to `POST /api/orgs/{orgId}/enquiries`.
 * New editable "Enquiry success message" setting.
-* Synced Groups now carry a `_scoutsuite_scouting_branch` meta (`land`/`air`/`sea`) for theme filtering, e.g. "Sea Scouts near me".
+* Synced Groups now carry a `_scoutsuite_scouting_branch` meta (`air`/`sea`, omitted for ordinary groups) for theme filtering, e.g. "Sea Scouts near me".
 
 = 1.1.0 =
 * Plugin renamed to Scout Suite. Waiting list is one feature; directory and events sync are the other.

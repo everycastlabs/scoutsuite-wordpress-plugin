@@ -20,7 +20,7 @@
  *   GET /api/orgs/{orgId}/wordpress/directory
  *     Plugin-only. Bearer required. Directory of Groups in a District/County,
  *     or the single Group when orgId is a Group. 404 must fail the sync.
- *     Each group row now includes scoutingBranch ("land"|"air"|"sea"|null).
+ *     Each group row now includes scoutingBranch ("air"|"sea"|null).
  *     The envelope also carries regionalTierLabel ("county"|"area"|"region"|null)
  *     describing the queried org itself (only set when orgId is a County).
  *

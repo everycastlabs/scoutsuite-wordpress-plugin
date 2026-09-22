@@ -4,7 +4,7 @@
  *
  * WPSL and Skills for Life keep the public map/list UI. This class mostly
  * writes the post meta those plugins already read, plus one bespoke key
- * they do not: `_scoutsuite_scouting_branch` ('land'|'air'|'sea'), for
+ * they do not: `_scoutsuite_scouting_branch` ('air'|'sea'|null), for
  * theme developers who want to filter or badge stores by branch — neither
  * WPSL nor Skills for Life has a native concept of this. It never deletes
  * stores.
@@ -203,9 +203,14 @@ class ScoutSuite_Waitlist_Stores {
 
 		// Not a native WPSL/SFL field — a bespoke meta key for theme developers
 		// and site owners who want to filter or badge stores by branch, e.g.
-		// "Sea Scouts near me". 'land' | 'air' | 'sea', defaults to 'land'.
+		// "Sea Scouts near me". 'air' | 'sea' | null. Ordinary groups have no
+		// branch, so the key is removed rather than stored as a sentinel.
 		$branch = strtolower( self::pick_string( $group, array( 'scoutingBranch', 'scouting_branch' ) ) );
-		self::update_meta( $post_id, '_scoutsuite_scouting_branch', '' !== $branch ? $branch : 'land' );
+		if ( '' !== $branch ) {
+			self::update_meta( $post_id, '_scoutsuite_scouting_branch', $branch );
+		} else {
+			delete_post_meta( $post_id, '_scoutsuite_scouting_branch' );
+		}
 
 		$scarf = self::map_scarf( $group );
 		if ( ! empty( $scarf ) ) {
