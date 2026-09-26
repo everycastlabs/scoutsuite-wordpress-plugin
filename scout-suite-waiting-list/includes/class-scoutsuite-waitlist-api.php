@@ -6,14 +6,14 @@
  * where they exist; WordPress plugin-only routes are documented here so the
  * backend can ship them without this plugin inventing fallback data):
  *
- *   POST /api/groups/{groupId}/waiting-list
+ *   POST /api/orgs/{orgId}/waiting-list
  *     Adds an entry to the group's waiting list. Callable publicly for the
  *     public form, or with a Bearer API key (ss_at_...).
  *     Required body fields: firstName, lastName, parentName, parentEmail.
  *     Optional: dateOfBirth, section, parentPhone, notes, isSibling, postcode,
  *     source ("wordpress" when submitted from this plugin).
  *
- *   GET /api/groups/{groupId}/waiting-list/signup-info
+ *   GET /api/orgs/{orgId}/waiting-list/signup-info
  *     Public. Returns the group name and active sections, used to populate
  *     the section dropdown on the form.
  *
@@ -145,7 +145,7 @@ class ScoutSuite_Waitlist_API {
 	 * @return array { success: bool, message: string, code: string }
 	 */
 	public function submit_entry( $fields ) {
-		$url = $this->base_url . '/api/groups/' . rawurlencode( $this->org_id ) . '/waiting-list';
+		$url = $this->base_url . '/api/orgs/' . rawurlencode( $this->org_id ) . '/waiting-list';
 
 		$response = wp_remote_post(
 			$url,
@@ -194,7 +194,7 @@ class ScoutSuite_Waitlist_API {
 			return $cached;
 		}
 
-		$url = $this->base_url . '/api/groups/' . rawurlencode( $this->org_id ) . '/waiting-list/signup-info';
+		$url = $this->base_url . '/api/orgs/' . rawurlencode( $this->org_id ) . '/waiting-list/signup-info';
 
 		$response = wp_remote_get(
 			$url,

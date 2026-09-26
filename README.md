@@ -32,7 +32,7 @@ Click **Sync now** or wait for hourly WP-Cron. Re-running updates address, night
 Shortcode `[scoutsuite_waitlist]` and a Gutenberg block. Parents fill in the form; WordPress posts the entry to Scout Suite:
 
 ```
-POST {api_base}/api/groups/{orgId}/waiting-list
+POST {api_base}/api/orgs/{orgId}/waiting-list
 ```
 
 The JSON body includes `"source": "wordpress"` alongside the existing fields. An API key is optional for this public endpoint. If you set one, it is sent as a Bearer header from the server and is never exposed to visitors.

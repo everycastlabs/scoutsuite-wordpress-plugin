@@ -3,7 +3,7 @@
  * Plugin Name:       Scout Suite
  * Plugin URI:        https://scoutsuite.app
  * Description:       Connect a Scout Suite Group, District or County to WordPress. Sync Groups into WP Store Locator / Skills for Life, and embed a waiting list or general enquiry form on your site.
- * Version:           1.2.0
+ * Version:           1.2.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Scout Suite
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SCOUTSUITE_WAITLIST_VERSION', '1.2.0' );
+define( 'SCOUTSUITE_WAITLIST_VERSION', '1.2.1' );
 define( 'SCOUTSUITE_WAITLIST_PLUGIN_FILE', __FILE__ );
 define( 'SCOUTSUITE_WAITLIST_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SCOUTSUITE_WAITLIST_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
