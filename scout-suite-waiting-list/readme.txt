@@ -4,7 +4,7 @@ Tags: scouts, scout suite, waiting list, directory, membership
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,6 +90,9 @@ The plugin gives you the tools: a privacy notice you can edit, and a consent che
 The privacy notice, consent label and success message are editable under Settings, Scout Suite.
 
 == Changelog ==
+
+= 1.2.1 =
+* Fix: waiting-list sign-ups and the section dropdown call `/api/orgs/{orgId}/waiting-list` (and `/waiting-list/signup-info`). Scout Suite retired the old `/api/groups/...` paths, so both were failing.
 
 = 1.2.0 =
 * New `[scoutsuite_enquiry]` shortcode and Gutenberg block: a general "get in touch" form that works on Group, District or County sites, posting to `POST /api/orgs/{orgId}/enquiries`.
